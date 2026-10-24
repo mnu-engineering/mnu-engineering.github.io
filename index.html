@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://www.gstatic.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src https://*.firebaseapp.com; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>مكتبة مواد هندسة المنصورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root[data-theme=dark]{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --line:#334155;
+  --ink:#f8fafc;
+  --muted:#94a3b8;
+  --soft:#0f172a;
+  --blueprint-line: rgba(99, 102, 241, 0.08);
+  --blueprint-grid: rgba(255, 255, 255, 0.03);
+}
+:root[data-theme=light]{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --ink:#0f172a;
+  --muted:#64748b;
+  --soft:#f1f5f9;
+  --blueprint-line: rgba(79, 70, 229, 0.06);
+  --blueprint-grid: rgba(15, 23, 42, 0.03);
+}
+:root{--accent:#6366f1; --accent-hover:#4f46e5;}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Tajawal',Tahoma,sans-serif;
+  line-height:1.6;
+  background-image: 
+    linear-gradient(30deg, var(--blueprint-line) 12%, transparent 12.5%, transparent 87%, var(--blueprint-line) 87.5%, var(--blueprint-line)),
+    linear-gradient(150deg, var(--blueprint-line) 12%, transparent 12.5%, transparent 87%, var(--blueprint-line) 87.5%, var(--blueprint-line)),
+    linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+  background-size: 60px 104px, 60px 104px, 20px 20px, 20px 20px;
+  background-attachment: fixed;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 24px;
+  padding-top:calc(12px + env(safe-area-inset-top, 0px));
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.logo{
+  width:42px;
+  height:42px;
+  flex:none;
+  border-radius:12px;
+  background:linear-gradient(135deg, #6366f1, #4338ca);
+  display:grid;
+  place-items:center;
+  font-size:1.3rem;
+  transition: transform 0.3s ease;
+}
+.logo:hover{transform: rotate(360deg) scale(1.1);}
+header h1{flex:1;min-width:0;margin:0;font-size:1.15rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.ib{
+  width:44px;
+  height:44px;
+  flex:none;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--soft);
+  color:var(--ink);
+  cursor:pointer;
+  font-size:1.2rem;
+  transition: all 0.2s ease;
+  display:grid;
+  place-items:center;
+}
+.ib:hover{transform: scale(1.08); border-color:var(--accent);}
+
+#back{display:none}
+main{max-width:1320px;margin:0 auto;padding:22px 20px 40px}
+
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+button,input,textarea{font-family:inherit;font-size:1rem}
+
+.tab{
+  padding:10px 22px;
+  min-height:44px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  cursor:pointer;
+  font-weight:700;
+  transition: all 0.3s ease;
+}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);}
+
+.chip{
+  padding:8px 18px;
+  min-height:40px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+.chip.on{border-color:var(--accent);color:var(--accent);font-weight:700;background:var(--soft)}
+
+.stats-bar{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+.stat-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px 16px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.stat-card .num{font-size:1.5rem; font-weight:800; color:var(--accent);}
+.stat-card .lbl{font-size:0.88rem; color:var(--muted);}
+
+.backbtn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  padding:10px 20px;
+  min-height:44px;
+  border-radius:12px;
+  border:0;
+  background:var(--accent);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  transition: transform 0.2s ease;
+}
+.backbtn:hover{transform: translateX(-4px);}
+
+#q{
+  width:100%;
+  padding:14px 18px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  transition: border-color 0.3s ease;
+}
+#q:focus{border-color:var(--accent);outline:none;}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:18px;
+  margin-top:8px;
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:22px 16px 16px;
+  cursor:pointer;
+  text-align:center;
+  color:var(--ink);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover{
+  border-color:var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.18);
+}
+
+.card-bg-pattern{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-size:2.4rem;
+  opacity:0.06;
+  font-family:monospace, sans-serif;
+  pointer-events:none;
+  user-select:none;
+  font-weight:bold;
+  text-align:center;
+  white-space:pre-line;
+  line-height:1.2;
+}
+
+.bar{position:absolute;inset:0 0 auto 0;height:6px}
+
+.ico{
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--accent);
+  border:1px solid var(--line);
+  display:grid;
+  place-items:center;
+  font-size:1.75rem;
+  margin:0 auto 12px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, color 0.3s ease;
+}
+.card:hover .ico, .ico:hover{
+  transform: scale(1.2) rotate(10deg);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+}
+
+.card h3{margin:0 0 4px;font-size:1.2rem;font-weight:800;overflow-wrap:anywhere}
+.docs{color:var(--muted);font-size:.86rem;min-height:2.6em}
+.meta{display:flex;justify-content:center;gap:18px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden;transition: border-color 0.3s ease;}
+details:hover{border-color:var(--accent);}
+summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;min-height:48px;cursor:pointer;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+.badge{flex:none;font-size:.8rem;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--accent);border:1px solid var(--line)}
+
+.lk{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:48px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none;transition: background 0.2s ease, padding-right 0.2s ease;}
+.lk:hover{background:var(--soft);padding-right:20px;}
+.lk i{font-style:normal;flex:none;width:24px;text-align:center;transition: transform 0.2s ease;}
+.lk span{min-width:0;overflow-wrap:anywhere}
+.lk:hover i{transform: scale(1.25);}
+
+.empty{text-align:center;color:var(--muted);padding:50px 10px;border:1px dashed var(--line);border-radius:20px; font-weight:600;}
+h2.sub{margin:0 0 4px;font-size:1.4rem}
+
+footer{max-width:1320px;margin:0 auto;padding:20px 16px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:.92rem}
+footer .mk{margin-bottom:12px;font-weight:500}
+footer .sp{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+footer .sp a{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-weight:600;transition: border-color 0.3s ease;}
+footer .sp a:hover{border-color:var(--accent)}
+
+.modal-bg{
+  position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,0.65); backdrop-filter:blur(5px);
+  display:none; place-items:center; padding:16px;
+}
+.modal-bg.open{display:grid}
+.modal{
+  background:var(--card); border:1px solid var(--line); border-radius:24px;
+  width:100%; max-width:520px; max-height:90vh; overflow-y:auto; padding:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.3); position:relative;
+}
+.modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+.modal-head h2{margin:0; font-size:1.3rem; font-weight:800}
+.close-btn{background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer; width:44px; height:44px;}
+.close-btn:hover{color:var(--ink)}
+
+.modal-section{margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--line);}
+.modal-section:last-child{border-bottom:none; margin-bottom:0;}
+.modal-section h3{margin:0 0 8px; font-size:1rem; color:var(--accent);}
+
+.uni-badge{
+  background:linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(79, 70, 229, 0.05));
+  border:1px solid var(--accent); border-radius:14px; padding:12px 16px; text-align:center;
+  font-weight:700; color:var(--ink); margin-bottom:12px;
+}
+
+.field{width:100%; padding:12px; margin-bottom:8px; border-radius:10px; border:1px solid var(--line); background:var(--soft); color:var(--ink);}
+.msg{font-size:.85rem; color:#ef4444; margin:6px 0 0; min-height:1.2em}
+
+.stars{display:flex; gap:4px; font-size:1.8rem; margin:8px 0; justify-content:center;}
+.star{color:var(--muted); background:none; border:0; padding:4px 8px; min-width:44px; min-height:44px; font-size:inherit; cursor:pointer; transition:color 0.2s ease;}
+.star.active{color:#f59e0b;}
+
+.tab.vault{border-color:#f59e0b;color:#f59e0b}
+.tab.vault.on{background:#f59e0b;border-color:#f59e0b;color:#fff}
+.vault-box{max-width:460px;margin:24px auto;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center}
+.vault-box h2{margin:0 0 6px}
+.vault-year{margin:20px 0 8px;font-size:1.05rem;color:var(--accent)}
+.note{color:var(--muted);font-size:.88rem;margin:4px 0 12px}
+.vnote{background:var(--card);border:1px dashed #f59e0b;border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:.92rem}
+.vnote a{color:#f59e0b;font-weight:700}
+
+button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== الموبايل ===== */
+@media (max-width: 640px){
+  header{padding:10px 12px; padding-top:calc(10px + env(safe-area-inset-top, 0px)); gap:8px}
+  header h1{font-size:1rem}
+  main{padding:14px 12px 28px}
+  .years{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .years .tab{padding:10px 8px; width:100%}
+  .years .vault{grid-column:1 / -1}
+  .terms .chip{flex:1; text-align:center}
+  .stats-bar{gap:8px}
+  .stat-card{padding:10px 6px; border-radius:14px}
+  .stat-card .num{font-size:1.25rem}
+  .stat-card .lbl{font-size:.78rem}
+  .grid{grid-template-columns:1fr; gap:12px}
+  .card{padding:18px 14px 14px}
+  .docs{min-height:0}
+  h2.sub{font-size:1.2rem}
+  .backbtn{width:100%; justify-content:center}
+  .modal-bg{padding:0; place-items:end center}
+  .modal{max-width:none; max-height:92vh; border-radius:24px 24px 0 0; padding:20px 16px; padding-bottom:calc(20px + env(safe-area-inset-bottom, 0px))}
+  footer .sp{flex-direction:column}
+  footer .sp a{width:100%}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="ib" id="settings-btn" aria-label="الإعدادات">⚙️</button>
+  <h1 id="ttl"></h1>
+  <button class="ib" id="back" aria-label="رجوع">→</button>
+  <div class="logo">🎓</div>
+</header>
+
+<main id="app"></main>
+<footer id="foot"></footer>
+
+<!-- نافذة الإعدادات ولوحة الإدارة -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h2 id="modal-title">⚙️ الإعدادات والمعلومات</h2>
+      <button class="close-btn" id="close-modal" aria-label="إغلاق">✕</button>
+    </div>
+
+    <div class="modal-section">
+      <div class="uni-badge">
+        🏛️ تم تصميم وتطوير هذا الموقع بأيدي طلاب هندسة جامعة المنصورة الأهلية
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h3>👨‍💻 فريق العمل والمطورين</h3>
+      <div id="team-list" style="color:var(--muted); font-size:0.95rem;"></div>
+    </div>
+
+    <!-- لوحة الإدارة: تظهر فقط لو تم ضبط Firebase، والدخول بحساب حقيقي -->
+    <div class="modal-section" id="admin-section" hidden>
+      <h3>🔐 لوحة الإدارة</h3>
+      <form id="admin-login-box" autocomplete="on">
+        <input class="field" type="email" id="admin-email" placeholder="البريد الإلكتروني" autocomplete="username" required>
+        <input class="field" type="password" id="admin-pass" placeholder="كلمة المرور" autocomplete="current-password" required>
+        <button class="tab on" type="submit" style="width:100%">تسجيل الدخول</button>
+        <p class="msg" id="admin-msg" role="alert"></p>
+      </form>
+
+      <div id="admin-panel" hidden style="background:var(--soft); padding:14px; border-radius:12px; border:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:8px;">
+          <span style="font-weight:700; color:var(--accent);">📊 إحصائيات الزيارات</span>
+          <button id="admin-logout" class="chip">خروج</button>
+        </div>
+        <p style="margin:4px 0; font-size:0.9rem;">إجمالي عدد الزيارات: <strong id="visitor-count" style="color:var(--accent);">—</strong></p>
+        <button id="reset-stats" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.85rem; padding:8px 0;">تصفير الإحصائيات</button>
+      </div>
+    </div>
+
+    <div class="modal-section" id="support-section" hidden>
+      <h3>📞 الدعم الفني والآراء (واتساب)</h3>
+      <div style="display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+        <span dir="ltr" id="support-user" style="font-weight:700;"></span>
+        <button class="chip" id="copy-user" type="button">نسخ اليوزر</button>
+      </div>
+      <p class="msg" id="copy-msg" style="color:var(--muted)"></p>
+    </div>
+
+    <div class="modal-section">
+      <h3>⭐ تقييم الموقع والملاحظات</h3>
+      <p style="font-size:0.9rem; color:var(--muted); margin:4px 0; text-align:center;">رأيك يهمنا لتطوير وتحسين الموقع باستمرار:</p>
+      <div class="stars" id="star-rating" role="group" aria-label="تقييم الموقع"></div>
+      <button class="tab" style="width:100%; margin-top:8px; background:var(--accent); color:#fff;" id="feedback-btn" type="button" hidden>
+        💬 إرسال اقتراح أو تعديل للمطور
+      </button>
+    </div>
+
+    <div class="modal-section">
+      <h3>🎨 المظهر والتطبيق</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span>الوضع الليلي / الفاتح</span>
+        <button class="ib" id="theme-toggle" aria-label="تبديل المظهر">☀</button>
+      </div>
+      <p style="font-size:0.8rem; color:var(--muted); margin-top:12px; text-align:center;">إصدار التطبيق: v1.7</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== إعدادات الموقع (عدّل هنا) ===== */
+// رقم واتساب الدعم بالصيغة الدولية، مثال: '201012345678' (يقبل أيضاً 01012345678 أو +20 101 234 5678)
+const SUPPORT_WA_NUMBER = '';
+// يوزر واتساب الدعم (بيظهر في الإعدادات والفوتر مع زر نسخ)
+const SUPPORT_WA_USERNAME = 'ELPASH7';
+const MAKERS = ['Students of Mansoura National University – Faculty of Engineering'];
+
+// لوحة الإدارة الحقيقية: ضع إعدادات مشروع Firebase هنا (Authentication بالبريد + Firestore).
+// لو تُركت null تختفي لوحة الإدارة تماماً ولا يوجد أي كلمة سر داخل الكود.
+const FIREBASE_CONFIG = null;
+/* مثال:
+const FIREBASE_CONFIG = { apiKey:'...', authDomain:'...', projectId:'...', appId:'...' };
+*/
+
+/* ===== تخزين آمن (لا يُسقط الموقع لو التخزين معطّل أو البيانات تالفة) ===== */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} },
+  sget(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+  sset(k, v){ try { sessionStorage.setItem(k, v); } catch (e) {} }
+};
+function readRating(){
+  const n = Number(store.get('site_rating'));
+  return Number.isInteger(n) && n >= 1 && n <= 5 ? n : 0;
+}
+
+/* ===== البيانات ===== */
+const SITE = 'مكتبة مواد هندسة المنصورة';
+// روابط الدرايف مشفّرة (AES-GCM) ولا تظهر إلا بكلمة المرور. لتغيير كلمة المرور استخدم vault-tool.html
+const VAULT_BLOB = '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';
+const YEARS = [
+  { id: 'prep', name: 'Prep Year' },
+  { id: 'second', name: 'Second Year' },
+  { id: 'third', name: 'Third Year' },
+  { id: 'fourth', name: 'Fourth Year' }
+];
+
+const SUBJECTS = [
+  {
+    "id": "math1",
+    "year": "prep",
+    "term": 1,
+    "name": "Math 1",
+    "icon": "∑",
+    "pattern": "∫ dx\nπ = 3.14",
+    "color": [
+      "#6366f1",
+      "#4f46e5"
+    ],
+    "doctors": [
+      "د. رضا عبده"
+    ],
+    "sections": [
+      {
+        "title": "جبر - شابتر 1",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/z1P5DcblvrU"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/si6PxFvv2xs"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/tpa4Y16tAqU"
+          }
+        ]
+      },
+      {
+        "title": "جبر - شابتر 2",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/KW2fRTEqV_M"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/1dgdZJz80zI"
+          }
+        ]
+      },
+      {
+        "title": "جبر - شابتر 3",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الشابتر",
+            "u": "https://youtu.be/tFqPK18KX-U"
+          }
+        ]
+      },
+      {
+        "title": "جبر - شرح Gauss-Jordan",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/DCbqea-M9X0"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/uzxphSUf5g8"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/fuBtwJ5vtDo"
+          }
+        ]
+      },
+      {
+        "title": "جبر - مراجعة",
+        "links": [
+          {
+            "t": "مراجعة جبر - د. رضا عبده",
+            "u": "https://youtu.be/M7EMu0Cnxms"
+          }
+        ]
+      },
+      {
+        "title": "تكامل - شابتر 1",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/V8y4sNmbfF8"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/WaNfTyNy91A"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/SCeCncgFjLo"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الرابع",
+            "u": "https://youtu.be/36X6_xkxzoE"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الخامس",
+            "u": "https://youtu.be/IzjjVi0lZHQ"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو السادس",
+            "u": "https://youtu.be/400vTlBsM5Y"
+          },
+          {
+            "t": "أمثلة على الشابتر 1 - د. رضا عبده",
+            "u": "https://youtu.be/HdL2biUQGxA"
+          }
+        ]
+      },
+      {
+        "title": "تكامل - شابتر 2",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/8SOloFaGTqU"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/fWtrKGTUjMI"
+          }
+        ]
+      },
+      {
+        "title": "تكامل - شابتر 3",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/ifZqyE3Fq34"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/RTOB4M_cxVc"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/0f2DrG4eySs"
+          },
+          {
+            "t": "مراجعة على الشابتر - د. رضا عبده",
+            "u": "https://youtu.be/w70tbRM8bZ0"
+          }
+        ]
+      },
+      {
+        "title": "امتحانات",
+        "links": [
+          {
+            "t": "امتحان ميد تيرم - د. رضا عبده",
+            "u": "https://youtu.be/Du6Ya0L-sXs"
+          },
+          {
+            "t": "امتحان فاينل - د. رضا عبده",
+            "u": "https://youtu.be/uBitKmfFINs"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mech1",
+    "year": "prep",
+    "term": 1,
+    "name": "Mechanics 1",
+    "icon": "⚙",
+    "pattern": "F = m·a\nv = u+at",
+    "color": [
+      "#f97316",
+      "#ea580c"
+    ],
+    "doctors": [
+      "د. رضا عبده"
+    ],
+    "sections": [
+      {
+        "title": "شابتر 1",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/sPJm0QfZKAM"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/W7iUdV-Xkbo"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/oaIrR6AKmUY"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الرابع",
+            "u": "https://youtu.be/fpsbGH-bYZU"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الخامس",
+            "u": "https://youtu.be/2r3uzo3n0RQ"
+          }
+        ]
+      },
+      {
+        "title": "شابتر 2",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الشابتر كامل",
+            "u": "https://youtu.be/FlnFbIM4jUk"
+          }
+        ]
+      },
+      {
+        "title": "شابتر 3",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/8yAJ8x8nIoc"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/djbvcYfh5wk"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثالث",
+            "u": "https://youtu.be/n5orRK8jNiA"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الرابع",
+            "u": "https://youtu.be/pMaK9Jghiu4"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الخامس",
+            "u": "https://youtu.be/AoNGp_SXjiU"
+          }
+        ]
+      },
+      {
+        "title": "شابتر 4",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/BS3gUHFyZu0"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني (بارت 1)",
+            "u": "https://youtu.be/HyukKrJW0H8"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني (بارت 2)",
+            "u": "https://youtu.be/CWL_AyjfTvs"
+          }
+        ]
+      },
+      {
+        "title": "شابتر 5",
+        "links": [
+          {
+            "t": "شرح د. رضا عبده - الفيديو الأول",
+            "u": "https://youtu.be/knAzMUiDJRY"
+          },
+          {
+            "t": "شرح د. رضا عبده - الفيديو الثاني",
+            "u": "https://youtu.be/l27dddqtFhY"
+          }
+        ]
+      },
+      {
+        "title": "حل امتحانات",
+        "links": [
+          {
+            "t": "حل نموذج امتحان 1 - د. رضا عبده",
+            "u": "https://youtu.be/_oysN5Ydh-M"
+          },
+          {
+            "t": "حل نموذج امتحان 2 - د. رضا عبده",
+            "u": "https://youtu.be/Kppl2I6iCPU"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "draw1",
+    "year": "prep",
+    "term": 1,
+    "name": "Engineering Drawing",
+    "icon": "📐",
+    "pattern": "CAD 2D\n3D PROJ",
+    "color": [
+      "#10b981",
+      "#059669"
+    ],
+    "doctors": [
+      "د. توكل",
+      "م. فوزي"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات د. توكل",
+        "links": [
+          {
+            "t": "بلاي ليست محاضرات د. توكل",
+            "u": "https://youtube.com/playlist?list=PLjtgayhnDHtwCTTjb3c5YIYlNAglOLxgi"
+          }
+        ]
+      },
+      {
+        "title": "استنتاج المساقط - م. فوزي",
+        "links": [
+          {
+            "t": "بلاي ليست استنتاج المساقط - م. فوزي",
+            "u": "https://youtube.com/playlist?list=PLzUO2R2yBZGBRuDNEWnK7gxwGg9ItdnZN"
+          }
+        ]
+      },
+      {
+        "title": "مراجعة ميد تيرم",
+        "links": [
+          {
+            "t": "مراجعة ميد تيرم",
+            "u": "https://youtu.be/LgEn3Twffg0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "prog1",
+    "year": "prep",
+    "term": 1,
+    "name": "Programming",
+    "icon": "💻",
+    "pattern": "while()\n{ C++ }",
+    "color": [
+      "#06b6d4",
+      "#0891b2"
+    ],
+    "doctors": [
+      "د. محمود"
+    ],
+    "sections": [
+      {
+        "title": "شرح د. محمود",
+        "links": [
+          {
+            "t": "بلاي ليست شرح د. محمود",
+            "u": "https://youtube.com/playlist?list=PLqhlDoXCm-cgptnBxMpiHfRI_CsNCDf45"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "phys1",
+    "year": "prep",
+    "term": 1,
+    "name": "Physics 1",
+    "icon": "⚛",
+    "pattern": "E = mc²\nΦ = B·A",
+    "color": [
+      "#eab308",
+      "#ca8a04"
+    ],
+    "doctors": [
+      "د. محمد إسلام"
+    ],
+    "sections": [
+      {
+        "title": "شرح د. محمد إسلام",
+        "links": [
+          {
+            "t": "شرح د. محمد إسلام - الفيديو الأول",
+            "u": "https://youtu.be/Xrfio444mkg"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو الثالث",
+            "u": "https://youtu.be/h2jWgw6gRK8"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو الرابع",
+            "u": "https://youtu.be/YXsqQ6Yrss4"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو السادس",
+            "u": "https://youtu.be/cTSZjKgUwsc"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو السابع",
+            "u": "https://youtu.be/XqaIOw-i11g"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو الثامن",
+            "u": "https://youtu.be/_hfbic-sBhE"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو التاسع",
+            "u": "https://youtu.be/oYECiCG2rYY"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو العاشر",
+            "u": "https://youtu.be/MPHZGvyJ8fs"
+          },
+          {
+            "t": "شرح د. محمد إسلام - الفيديو الحادي عشر",
+            "u": "https://youtu.be/wjmt9D0TAAA"
+          }
+        ]
+      },
+      {
+        "title": "Gauss's Law",
+        "links": [
+          {
+            "t": "بلاي ليست كاملة لجزء Gauss's Law",
+            "u": "https://youtube.com/playlist?list=PLD30uL4tqplH5Lyg6V2VCZCs_CaEdXWA9"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "social_issues",
+    "year": "prep",
+    "term": 1,
+    "name": "قضايا مجتمعية",
+    "icon": "🏛",
+    "pattern": "CIVIL\nETHICS",
+    "color": [
+      "#f43f5e",
+      "#e11d48"
+    ],
+    "doctors": [],
+    "sections": [],
+    "v": 1
+  },
+  {
+    "id": "elpasha_summaries",
+    "year": "prep",
+    "term": 1,
+    "name": "بصمجياتتت 🐢",
+    "icon": "🐢",
+    "pattern": "PASHA\nNOTES",
+    "color": [
+      "#14b8a6",
+      "#0d9488"
+    ],
+    "doctors": [],
+    "sections": [],
+    "v": 1
+  },
+  {
+    "id": "mechanics_summaries",
+    "year": "prep",
+    "term": 1,
+    "name": "ملخصات ميكانيكا",
+    "icon": "📘",
+    "pattern": "MECH\nDOCS",
+    "color": [
+      "#3b82f6",
+      "#2563eb"
+    ],
+    "doctors": [],
+    "sections": [],
+    "v": 1
+  },
+  {
+    "id": "manufacturing",
+    "year": "prep",
+    "term": 1,
+    "name": "تصنيع",
+    "icon": "🛠",
+    "pattern": "CNC\nLATHE",
+    "color": [
+      "#84cc16",
+      "#65a30d"
+    ],
+    "doctors": [
+      "د. أسامة"
+    ],
+    "sections": [
+      {
+        "title": "شرح د. أسامة",
+        "links": [
+          {
+            "t": "بلاي ليست شرح د. أسامة",
+            "u": "https://youtube.com/playlist?list=PLlzDSScHK9w75WdBXRAJZ1iMpTepshWEw&si=iMO7eztU2o0phuAV"
+          }
+        ]
+      },
+      {
+        "title": "ورشة إنتاج",
+        "links": [
+          {
+            "t": "لحام",
+            "u": "https://youtu.be/yJQJP1gILuo?si=oO2-ZIAUCETYQAM1"
+          },
+          {
+            "t": "صاج",
+            "u": "https://youtu.be/cwGvDr6E8ag?si=RKwNd0yD1H6gtplQ"
+          },
+          {
+            "t": "نماذج",
+            "u": "https://youtu.be/emz--dLHjF4?si=6pOpil9Li3E_uMky"
+          },
+          {
+            "t": "كهرباء",
+            "u": "https://youtu.be/8OxtPybsgDQ?si=F_7-7qw8H5zty3xR"
+          },
+          {
+            "t": "براده",
+            "u": "https://youtu.be/wdr2gwLBnpY?si=6qiKvoC2ncpRGq_n"
+          },
+          {
+            "t": "سباكه",
+            "u": "https://youtu.be/TAPbLj8zZ6I?si=7sDPrq4wuNBaUNa5"
+          },
+          {
+            "t": "الحداده",
+            "u": "https://youtu.be/sxtxA9Bn3Iw?si=DmqqTNq3DOOw_TTf"
+          },
+          {
+            "t": "الماكينات",
+            "u": "https://youtu.be/wthgXmqjrt4?si=MGw0JdMG1e8XKdSy"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "math2",
+    "year": "prep",
+    "term": 2,
+    "name": "Math 2",
+    "icon": "∑",
+    "pattern": "∫∫ dA\nΣ aₙ",
+    "color": [
+      "#6366f1",
+      "#4f46e5"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "phys2",
+    "year": "prep",
+    "term": 2,
+    "name": "Physics 2",
+    "icon": "⚛",
+    "pattern": "λ = h/p\nΔE = hf",
+    "color": [
+      "#eab308",
+      "#ca8a04"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "draw2",
+    "year": "prep",
+    "term": 2,
+    "name": "Engineering Drawing",
+    "icon": "📐",
+    "pattern": "CAD 2D\n3D PROJ",
+    "color": [
+      "#10b981",
+      "#059669"
+    ],
+    "doctors": [
+      "د. توكل",
+      "م. فوزي"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات د. توكل",
+        "links": [
+          {
+            "t": "بلاي ليست محاضرات د. توكل",
+            "u": "https://youtube.com/playlist?list=PLjtgayhnDHtwCTTjb3c5YIYlNAglOLxgi"
+          }
+        ]
+      },
+      {
+        "title": "استنتاج المساقط - م. فوزي",
+        "links": [
+          {
+            "t": "بلاي ليست استنتاج المساقط - م. فوزي",
+            "u": "https://youtube.com/playlist?list=PLzUO2R2yBZGBRuDNEWnK7gxwGg9ItdnZN"
+          }
+        ]
+      },
+      {
+        "title": "مراجعة ميد تيرم",
+        "links": [
+          {
+            "t": "مراجعة ميد تيرم",
+            "u": "https://youtu.be/LgEn3Twffg0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "prog2",
+    "year": "prep",
+    "term": 2,
+    "name": "Programming",
+    "icon": "💻",
+    "pattern": "while()\n{ C++ }",
+    "color": [
+      "#06b6d4",
+      "#0891b2"
+    ],
+    "doctors": [
+      "د. محمود"
+    ],
+    "sections": [
+      {
+        "title": "شرح د. محمود",
+        "links": [
+          {
+            "t": "بلاي ليست شرح د. محمود",
+            "u": "https://youtube.com/playlist?list=PLqhlDoXCm-cgptnBxMpiHfRI_CsNCDf45"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "mech2",
+    "year": "prep",
+    "term": 2,
+    "name": "Mechanics 2",
+    "icon": "⚙",
+    "pattern": "τ = r×F\nI·α",
+    "color": [
+      "#f97316",
+      "#ea580c"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "solid_state_electronics",
+    "year": "second",
+    "term": 1,
+    "name": "Solid State Electronics",
+    "icon": "⚡",
+    "pattern": "n-p-n\nPN JCT",
+    "color": [
+      "#8b5cf6",
+      "#7c3aed"
+    ],
+    "doctors": [
+      "د. خالد بن سعيد"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات د. خالد بن سعيد",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLFqV0rPR6YYFHNvtCo6H5oIsq-vaF_xLD&si=GnqyNr602pf4yB-1"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "math3",
+    "year": "second",
+    "term": 1,
+    "name": "Math 3",
+    "icon": "∫",
+    "pattern": "∇ × F\n∇ · B",
+    "color": [
+      "#ec4899",
+      "#db2777"
+    ],
+    "doctors": [
+      "م. زياد ادري"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات المهندسة",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLOWRnbEtG4Eg5Wyi3l8TUFnGdFJ9jzF2x"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "logic_design",
+    "year": "second",
+    "term": 1,
+    "name": "Logic Design",
+    "icon": "🔢",
+    "pattern": "10101\nAND OR",
+    "color": [
+      "#06b6d4",
+      "#0891b2"
+    ],
+    "doctors": [
+      "م. هيثم",
+      "أ. محمد سامي"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات م. هيثم",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLhx4zaYkEjI8BuPybYhAotW2gKDIT9y2D&si=x1slEU5vZczoCrg8"
+          }
+        ]
+      },
+      {
+        "title": "محاضرات أ. محمد سامي",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLIVlH5-25yHLDBjbuROl1Cp5F3uGwQ5bY&si=tdjaWcTrdlC7gT3A"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "electric_circuits",
+    "year": "second",
+    "term": 1,
+    "name": "Electric Circuits",
+    "icon": "🔌",
+    "pattern": "V = I·R\nKVL KCL",
+    "color": [
+      "#eab308",
+      "#ca8a04"
+    ],
+    "doctors": [
+      "م. محمد ماهر"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات م. محمد ماهر",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLm877Wx3hfJ37R7tf8KaLhYXBrKtCLjzy&si=ZocDJcl18Ix-xiaO"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "engineering_history",
+    "year": "second",
+    "term": 1,
+    "name": "Engineering History",
+    "icon": "📜",
+    "pattern": "HIST\nARCH",
+    "color": [
+      "#10b981",
+      "#059669"
+    ],
+    "doctors": [],
+    "sections": [
+      {
+        "title": "شرح أول محاضرتين - جامعة المنصورة",
+        "links": [
+          {
+            "t": "شرح أول محاضرتين",
+            "u": "https://youtu.be/I9N4sYcth2E?si=jXp1dc6dl7wKHmUZ"
+          }
+        ]
+      },
+      {
+        "title": "شرح المادة كامل",
+        "links": [
+          {
+            "t": "بلاي ليست شرح المادة كاملة",
+            "u": "https://youtube.com/playlist?list=PLVac8LxdxCDE7v1YnriLZhoKL35OL9Dvr&si=bR0c5PsAtgCPQABK"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "technical_reports",
+    "year": "second",
+    "term": 1,
+    "name": "Technical Reports",
+    "icon": "📝",
+    "pattern": "IEEE\nREPORT",
+    "color": [
+      "#6366f1",
+      "#4f46e5"
+    ],
+    "doctors": [
+      "د. إبراهيم عمارة",
+      "د. عبد الرحمن"
+    ],
+    "sections": [
+      {
+        "title": "محاضرات د. إبراهيم عمارة",
+        "links": [
+          {
+            "t": "بلاي ليست المادة كاملة",
+            "u": "https://youtube.com/playlist?list=PLcqi72Z0AS7vQC89IsW9OkqGy_k0dcZZR&si=MnUGVjDg12pJZHPJ"
+          }
+        ]
+      },
+      {
+        "title": "محاضرات د. عبد الرحمن",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات",
+            "u": "https://youtube.com/playlist?list=PLZK4B6mUtHMEYNnZ5voC-ZPpB0dxO6Gxo&si=eGCNUvGKmPhf4MBE"
+          }
+        ]
+      }
+    ],
+    "v": 1
+  },
+  {
+    "id": "machine_learning",
+    "year": "second",
+    "term": 1,
+    "name": "Machine Learning",
+    "icon": "🤖",
+    "pattern": "y = wx+b\nGRAD ↓",
+    "color": [
+      "#8b5cf6",
+      "#7c3aed"
+    ],
+    "doctors": [],
+    "sections": [
+      {
+        "title": "المحاضرات",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLPBnj6azlABbaGuOzR40nvlzPWAKMv_qA&si=-5UuYoyG9E3DOK1g"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "artificial_intelligence",
+    "year": "second",
+    "term": 1,
+    "name": "Artificial Intelligence",
+    "icon": "🧠",
+    "pattern": "A* SEARCH\nAI",
+    "color": [
+      "#ec4899",
+      "#db2777"
+    ],
+    "doctors": [],
+    "sections": [
+      {
+        "title": "المحاضرات",
+        "links": [
+          {
+            "t": "بلاي ليست المحاضرات كاملة",
+            "u": "https://youtube.com/playlist?list=PLMm8EjqH1EFVR5O5wZCAy9x9mautNuxI6&si=OewylMxi6QOoP_hA"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "programming2",
+    "year": "second",
+    "term": 1,
+    "name": "Programming",
+    "icon": "💻",
+    "pattern": "for()\n{ OOP }",
+    "color": [
+      "#06b6d4",
+      "#0891b2"
+    ],
+    "doctors": [],
+    "sections": [
+      {
+        "title": "بلاي ليست 1",
+        "links": [
+          {
+            "t": "بلاي ليست 1",
+            "u": "https://youtube.com/playlist?list=PLePWW30iFqTDqvRJOYEZvaj4NZE5rf65x&si=f3POeuqk1XzNFdf2"
+          }
+        ]
+      },
+      {
+        "title": "بلاي ليست 2",
+        "links": [
+          {
+            "t": "بلاي ليست 2",
+            "u": "https://youtube.com/playlist?list=PLZJc_LAnhhPbAYUSRgjIIHHCPt3Fa1YPw&si=bG6UtUWEnQkK2pPX"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ethics",
+    "year": "second",
+    "term": 2,
+    "name": "Ethics",
+    "icon": "⚖",
+    "pattern": "ETHICS\nCODE",
+    "color": [
+      "#f43f5e",
+      "#e11d48"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "math4",
+    "year": "second",
+    "term": 2,
+    "name": "Math 4",
+    "icon": "∮",
+    "pattern": "∮ F·dr\nFOURIER",
+    "color": [
+      "#6366f1",
+      "#4f46e5"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "logic_design2",
+    "year": "second",
+    "term": 2,
+    "name": "Logic Design 2",
+    "icon": "🔢",
+    "pattern": "FSM\nFLIP-FLOP",
+    "color": [
+      "#10b981",
+      "#059669"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "signals_systems",
+    "year": "second",
+    "term": 2,
+    "name": "Signals and Systems",
+    "icon": "📡",
+    "pattern": "x(t) * h(t)\nFFT",
+    "color": [
+      "#3b82f6",
+      "#2563eb"
+    ],
+    "doctors": [],
+    "sections": []
+  },
+  {
+    "id": "statistics",
+    "year": "second",
+    "term": 2,
+    "name": "Statistics",
+    "icon": "📊",
+    "pattern": "μ  σ²\nP(A|B)",
+    "color": [
+      "#84cc16",
+      "#65a30d"
+    ],
+    "doctors": [],
+    "sections": []
+  }
+];
+
+/* ===== الكود البرمجي ===== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+let year = YEARS[0].id, term = 1, q = '';
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  for (const k in (props || {})) {
+    if (k === 'class') e.className = props[k];
+    else if (k.startsWith('on')) e[k] = props[k];
+    else e.setAttribute(k, props[k]);
+  }
+  kids.flat().forEach(c => e.append(c));
+  return e;
+}
+const okUrl = u => /^https?:\/\//i.test(u) ? u : '';
+function kind(u) {
+  if (/youtu/i.test(u)) return ['▶', '#ef4444'];
+  if (/drive\.google/i.test(u)) return ['▲', '#22c55e'];
+  if (/t\.me|telegram/i.test(u)) return ['✈', '#38bdf8'];
+  return ['🔗', '#9aa4bd'];
+}
+const linkCount = s => s.sections.reduce((n, x) => n + x.links.length, 0);
+const goHome = () => { location.hash = ''; };
+
+/* ===== واتساب: تحويل الرقم للصيغة الدولية ===== */
+function waNumber(raw) {
+  let d = String(raw || '').replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (/^01\d{9}$/.test(d)) d = '20' + d.slice(1);   // رقم مصري محلي
+  return /^[1-9]\d{9,14}$/.test(d) ? d : '';
+}
+const WA = waNumber(SUPPORT_WA_NUMBER);
+const WA_USER = /^[A-Za-z0-9._]{3,}$/.test(String(SUPPORT_WA_USERNAME).replace(/^@/, '').trim()) ? String(SUPPORT_WA_USERNAME).replace(/^@/, '').trim() : '';
+const waLink = text => 'https://wa.me/' + WA + (text ? '?text=' + encodeURIComponent(text) : '');
+
+function footer() {
+  const f = $('#foot'); f.replaceChildren();
+  const names = MAKERS.filter(Boolean);
+  if (names.length) f.append(h('div', { class: 'mk' }, 'تم تنفيذ الموقع بواسطة: ', h('span', { dir: 'ltr' }, names.join(' ، '))));
+  if (WA) {
+    f.append(h('div', { class: 'sp' },
+      h('span', {}, 'الدعم الفني والاراء'),
+      h('a', { href: waLink(), target: '_blank', rel: 'noopener noreferrer' }, 'تواصل معنا عبر واتساب')));
+  } else if (WA_USER) {
+    f.append(h('div', { class: 'sp' }, h('span', {}, 'الدعم الفني والآراء على واتساب: '), h('strong', { dir: 'ltr' }, '@' + WA_USER)));
+  }
+}
+
+/* ===== البحث: أسماء المواد والدكاترة والأقسام والروابط ===== */
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+    .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/\s+/g, ' ').trim();
+}
+const HAY = new Map();
+function hay(s) {
+  if (!HAY.has(s.id)) {
+    const parts = [s.name, ...s.doctors];
+    s.sections.forEach(x => { parts.push(x.title); x.links.forEach(l => parts.push(l.t)); });
+    HAY.set(s.id, norm(parts.join(' | ')));
+  }
+  return HAY.get(s.id);
+}
+const matches = (s, query) => {
+  const words = norm(query).split(' ').filter(Boolean);
+  return !words.length || words.every(w => hay(s).includes(w));
+};
+
+function home() {
+  $('#ttl').textContent = SITE; $('#back').style.display = 'none';
+  app.replaceChildren();
+
+  const tabs = h('div', { class: 'row years' }, YEARS.map(y => h('button', { class: 'tab' + (y.id === year ? ' on' : ''), onclick: () => { year = y.id; home(); } }, y.name)),
+    h('button', { class: 'tab vault', onclick: () => { location.hash = '#vault'; } }, '🔒 الدرايف - طلاب الأهلية'));
+  
+  const terms = h('div', { class: 'row terms' }, [[1, 'الترم الأول'], [2, 'الترم التاني']].map(([v, t]) =>
+    h('button', { class: 'chip' + (v === term ? ' on' : ''), onclick: () => { term = v; home(); } }, t)));
+  
+  const currentList = SUBJECTS.filter(s => s.year === year && s.term === term);
+  const totalSections = currentList.reduce((acc, cur) => acc + cur.sections.length, 0);
+  const totalLinks = currentList.reduce((acc, cur) => acc + linkCount(cur), 0);
+
+  const statsBar = h('div', { class: 'stats-bar' }, [
+    h('div', { class: 'stat-card' }, h('div', { class: 'num' }, currentList.length), h('div', { class: 'lbl' }, 'المقررات')),
+    h('div', { class: 'stat-card' }, h('div', { class: 'num' }, totalSections), h('div', { class: 'lbl' }, 'الأقسام')),
+    h('div', { class: 'stat-card' }, h('div', { class: 'num' }, totalLinks), h('div', { class: 'lbl' }, 'الروابط'))
+  ]);
+
+  const search = h('input', { id: 'q', type: 'search', placeholder: '🔍 ابحث عن مقرر أو دكتور أو قسم أو رابط...', value: q, 'aria-label': 'بحث' });
+  const grid = h('div', { class: 'grid' });
+  
+  app.append(tabs, terms, statsBar, h('div', { class: 'row' }, search), grid);
+
+  const draw = () => {
+    grid.replaceChildren();
+
+    if (year === 'third' || year === 'fourth') {
+      grid.append(h('div', { class: 'empty', style: 'grid-column: 1 / -1;' }, '⏳ سيتم إضافة المحتوى قريباً...'));
+      return;
+    }
+
+    const list = currentList.filter(s => matches(s, q));
+    if (!list.length) { grid.append(h('div', { class: 'empty', style: 'grid-column: 1 / -1;' }, q.trim() ? 'مفيش نتائج للبحث ده.' : 'مفيش مواد متوفرة هنا حالياً.')); return; }
+    
+    list.forEach(s => grid.append(h('button', { class: 'card', onclick: () => { location.hash = '#' + s.id; } },
+      h('div', { class: 'bar', style: `background:linear-gradient(90deg,${s.color[0]},${s.color[1]})` }),
+      h('div', { class: 'card-bg-pattern' }, s.pattern || 'ENG'),
+      h('div', { class: 'ico' }, s.icon),
+      h('h3', {}, s.name),
+      h('div', { class: 'docs' }, s.doctors.length ? s.doctors.join(' ، ') : 'ـ'),
+      h('div', { class: 'meta' }, h('span', {}, s.sections.length + ' قسم'), h('span', {}, linkCount(s) + ' رابط')))));
+  };
+  search.oninput = e => { q = e.target.value; draw(); };
+  draw();
+}
+
+function subject(s) {
+  $('#ttl').textContent = s.name; $('#back').style.display = '';
+  app.replaceChildren(
+    h('button', { class: 'backbtn', onclick: goHome }, '→ رجوع للمواد'),
+    h('h2', { class: 'sub' }, s.name),
+    h('p', { class: 'docs' }, s.doctors.length ? s.doctors.join(' ، ') : ''));
+  const secs = s.sections.slice();
+  if (s.v) app.append(h('div', { class: 'vnote' }, '📁 ملفات الدرايف الخاصة بالمادة دي في خانة ', h('a', { href: '#vault' }, '🔒 الدرايف - طلاب الأهلية')));
+  if (!secs.length) { if (!s.v) app.append(h('div', { class: 'empty' }, 'جاري تجهيز المصادر والمحتوى لهذه المادة قريباً...')); return; }
+  secs.forEach(sec => {
+    const d = h('details', {}, h('summary', {}, h('span', {}, sec.title), h('span', { class: 'badge' }, sec.links.length + ' رابط')));
+    sec.links.forEach(l => {
+      const u = okUrl(l.u); if (!u || isDrive(u)) return;
+      const [ic, col] = kind(u);
+      d.append(h('a', { class: 'lk', href: u, target: '_blank', rel: 'noopener noreferrer' }, h('i', { style: 'color:' + col }, ic), h('span', {}, l.t)));
+    });
+    app.append(d);
+  });
+}
+
+/* ===== خانة الدرايف المحمية (فك تشفير داخل المتصفح بكلمة المرور) ===== */
+const isDrive = u => /(^|\/\/)(drive|docs)\.google\.com/i.test(u);
+let vaultData = null, vaultFails = 0;
+async function decryptVault(pass) {
+  const raw = Uint8Array.from(atob(VAULT_BLOB), c => c.charCodeAt(0));
+  const salt = raw.slice(0, 16), iv = raw.slice(16, 28), data = raw.slice(28);
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass.normalize('NFC').trim()), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  const buf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+  return JSON.parse(new TextDecoder().decode(buf));
+}
+function vaultView() {
+  $('#ttl').textContent = '🔒 الدرايف'; $('#back').style.display = '';
+  app.replaceChildren(h('button', { class: 'backbtn', onclick: goHome }, '→ رجوع للمواد'));
+  if (!vaultData) {
+    const input = h('input', { type: 'password', class: 'field', placeholder: 'كلمة المرور', autocomplete: 'off', 'aria-label': 'كلمة المرور' });
+    const msg = h('p', { class: 'msg', role: 'alert' });
+    const btn = h('button', { class: 'tab on', type: 'submit', style: 'width:100%' }, 'فتح');
+    const form = h('form', { class: 'vault-box' },
+      h('h2', {}, '🔒 درايف طلاب الأهلية'),
+      h('p', { class: 'note' }, 'خاص بطلاب جامعة المنصورة الأهلية. اطلب كلمة المرور من مسؤول الموقع.'),
+      input, btn, msg);
+    form.onsubmit = async e => {
+      e.preventDefault(); msg.textContent = ''; btn.disabled = true;
+      try {
+        if (!(window.crypto && crypto.subtle)) throw new Error('nocrypto');
+        vaultData = await decryptVault(input.value);
+        vaultView(); return;
+      } catch (err) {
+        vaultFails++;
+        msg.textContent = err.message === 'nocrypto' ? 'افتح الموقع من الرابط الرسمي (https) عشان تقدر تدخل.' : 'كلمة المرور غير صحيحة.';
+        input.value = '';
+        await new Promise(r => setTimeout(r, Math.min(vaultFails, 5) * 1000));
+        btn.disabled = false;
+      }
+    };
+    app.append(form); input.focus(); return;
+  }
+  app.append(
+    h('div', { class: 'row' }, h('button', { class: 'chip', onclick: () => { vaultData = null; vaultView(); } }, '🔒 قفل')),
+    h('h2', { class: 'sub' }, 'درايف المواد'),
+    h('p', { class: 'note' }, 'خاص بطلاب جامعة المنصورة الأهلية، من فضلك متشاركش كلمة المرور مع حد من برّه.'));
+  YEARS.forEach(y => {
+    const subs = vaultData.filter(x => x.y === y.id);
+    if (!subs.length) return;
+    app.append(h('h3', { class: 'vault-year' }, y.name));
+    subs.forEach(x => {
+      const d = h('details', {}, h('summary', {}, h('span', {}, x.n + ' - ' + (x.tm === 1 ? 'الترم الأول' : 'الترم التاني')), h('span', { class: 'badge' }, x.i.length + ' رابط')));
+      x.i.forEach(l => {
+        const u = okUrl(l.u); if (!u) return;
+        const [ic, col] = kind(u);
+        d.append(h('a', { class: 'lk', href: u, target: '_blank', rel: 'noopener noreferrer' }, h('i', { style: 'color:' + col }, ic), h('span', {}, l.s && l.s !== l.t ? l.s + ' - ' + l.t : l.t)));
+      });
+      app.append(d);
+    });
+  });
+}
+
+function route() {
+  let id = '';
+  try { id = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  if (id === 'vault') { vaultView(); window.scrollTo(0, 0); return; }
+  const s = SUBJECTS.find(x => x.id === id);
+  s ? subject(s) : home();
+  window.scrollTo(0, 0);
+}
+$('#back').onclick = goHome;
+window.addEventListener('hashchange', route);
+
+/* ===== المظهر ===== */
+function setTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $('#theme-toggle').textContent = t === 'dark' ? '☀' : '🌙';
+  store.set('theme', t);
+}
+$('#theme-toggle').onclick = () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+const savedTheme = store.get('theme');
+setTheme(savedTheme === 'light' ? 'light' : 'dark');
+
+/* ===== نافذة الإعدادات ===== */
+const modalBg = $('#modal-bg');
+const openModal = () => modalBg.classList.add('open');
+const closeModal = () => modalBg.classList.remove('open');
+$('#settings-btn').onclick = openModal;
+$('#close-modal').onclick = closeModal;
+modalBg.onclick = e => { if (e.target === modalBg) closeModal(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ===== التقييم (يُحفظ ويُقرأ بأمان) ===== */
+let currentRating = readRating();
+const starBox = $('#star-rating');
+const starEls = [1, 2, 3, 4, 5].map(v => h('button', { type: 'button', class: 'star', 'aria-label': v + ' من 5', onclick: () => {
+  currentRating = v; store.set('site_rating', String(v)); paintStars();
+} }, '★'));
+starBox.append(...starEls);
+function paintStars() { starEls.forEach((el, i) => el.classList.toggle('active', i < currentRating)); }
+paintStars();
+
+const fb = $('#feedback-btn');
+const copyText = async t => { try { await navigator.clipboard.writeText(t); return true; } catch (e) { return false; } };
+if (WA_USER) {
+  $('#support-section').hidden = false;
+  $('#support-user').textContent = '@' + WA_USER;
+  $('#copy-user').onclick = async () => {
+    $('#copy-msg').textContent = (await copyText('@' + WA_USER)) ? 'تم نسخ اليوزر، ابحث عنه في واتساب.' : 'انسخ اليوزر يدوياً: @' + WA_USER;
+  };
+}
+if (WA || WA_USER) {
+  fb.hidden = false;
+  fb.onclick = async () => {
+    const text = `أهلاً، حابب أقدم تقييم للموقع: ${currentRating ? currentRating + ' نجوم ⭐' : ''}\nملاحظاتي/اقتراحاتي هي: `;
+    if (WA) { window.open(waLink(text), '_blank', 'noopener'); return; }
+    const ok = await copyText(text);
+    $('#copy-msg').textContent = (ok ? 'تم نسخ الرسالة. ' : '') + 'افتح واتساب وابعتها على @' + WA_USER;
+  };
+}
+
+/* ===== فريق العمل ===== */
+const teamBox = $('#team-list');
+const makers = MAKERS.filter(Boolean);
+if (makers.length) { teamBox.dir = 'ltr'; teamBox.style.textAlign = 'center'; teamBox.textContent = makers.join(' ، '); }
+else teamBox.textContent = 'جاري إعداد وتجميع فريق العمل...';
+
+/* ===== الخلفية: عدّاد الزيارات ولوحة الإدارة (Firebase Auth + Firestore) ===== */
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.append(s);
+  });
+}
+async function initBackend() {
+  if (!FIREBASE_CONFIG) return null;
+  try {
+    const base = 'https://www.gstatic.com/firebasejs/10.12.2/';
+    await loadScript(base + 'firebase-app-compat.js');
+    await Promise.all([loadScript(base + 'firebase-auth-compat.js'), loadScript(base + 'firebase-firestore-compat.js')]);
+    firebase.initializeApp(FIREBASE_CONFIG);
+    return { auth: firebase.auth(), db: firebase.firestore() };
+  } catch (e) { return null; }
+}
+
+async function setupBackend() {
+  const be = await initBackend();
+  if (!be) return;
+  const ref = be.db.doc('stats/visits');
+
+  if (!store.sget('counted_visit')) {
+    store.sset('counted_visit', '1');
+    try { await ref.set({ count: firebase.firestore.FieldValue.increment(1) }, { merge: true }); } catch (e) {}
+  }
+
+  $('#admin-section').hidden = false;
+  const msg = $('#admin-msg');
+  const loginBox = $('#admin-login-box'), panel = $('#admin-panel'), counter = $('#visitor-count');
+
+  async function loadCount() {
+    counter.textContent = '…';
+    try {
+      const d = await ref.get();
+      const n = d.exists ? Number(d.data().count) : 0;
+      counter.textContent = Number.isFinite(n) ? n : 0;
+    } catch (e) { counter.textContent = 'غير متاح (لا توجد صلاحية)'; }
+  }
+
+  be.auth.onAuthStateChanged(u => {
+    loginBox.hidden = !!u; panel.hidden = !u;
+    if (u) loadCount();
+  });
+
+  loginBox.onsubmit = async e => {
+    e.preventDefault(); msg.textContent = '';
+    try {
+      await be.auth.signInWithEmailAndPassword($('#admin-email').value.trim(), $('#admin-pass').value);
+      $('#admin-pass').value = '';
+    } catch (err) { msg.textContent = 'بيانات الدخول غير صحيحة.'; }
+  };
+  $('#admin-logout').onclick = () => be.auth.signOut();
+  $('#reset-stats').onclick = async () => {
+    if (!confirm('هل أنت متأكد من تصفير عداد الزيارات؟')) return;
+    try { await ref.set({ count: 0 }); counter.textContent = '0'; }
+    catch (e) { counter.textContent = 'تعذر التصفير (لا توجد صلاحية)'; }
+  };
+}
+
+footer();
+route();
+setupBackend();
+</script>
+</body>
+</html>
